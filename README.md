@@ -1,3 +1,4 @@
+
 # Carbon Footprint Calculator for Kashmiri Crafts
 
 A web application that calculates the carbon footprint of Kashmiri craft products based on materials, processing, transportation, and other factors.
@@ -16,4 +17,5 @@ A web application that calculates the carbon footprint of Kashmiri craft product
 4. Install dependencies: `pip install -r requirements.txt`
 5. Configure PostgreSQL and update .env file
 6. Run with: `uvicorn app.main:app --reload`
+
 
