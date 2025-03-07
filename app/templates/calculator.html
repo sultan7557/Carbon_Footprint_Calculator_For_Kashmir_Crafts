@@ -1,0 +1,1330 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6">
+    <h1 class="text-2xl font-bold text-center mb-8">De Koshur Carbon Footprint Calculator</h1>
+    
+    <form id="calculatorForm" class="space-y-6">
+      <!-- Main Category -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Main Category*</label>
+        <select name="main_category" id="main_category" class="w-full p-2 border rounded-md">
+          <option value="I don’t know">I don’t know</option>
+          <option value="Boutique">Boutique</option>
+          <option value="Interior Decor">Interior Decor</option>
+          <option value="Dining and Serving Ware">Dining and Serving Ware</option>
+          <option value="Rugs and Carpets">Rugs and Carpets</option>
+          <option value="Furniture">Furniture</option>
+          <option value="Ceiling Treatment">Ceiling Treatment</option>
+          <option value="Window Treatment">Window Treatment</option>
+          <option value="Recycled Craft">Recycled Craft</option>
+          <option value="Sports Craft">Sports Craft</option>
+          <option value="Hide Craft">Hide Craft</option>
+          <option value="Culinary Craft">Culinary Craft</option>
+          <option value="Embroidery">Embroidery</option>
+        </select>
+      </div>
+
+      <!-- Subcategory -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Subcategory*</label>
+        <select name="subcategory" id="subcategory" class="w-full p-2 border rounded-md">
+          <option value="I don’t know">I don’t know</option>
+        </select>
+      </div>
+
+      <!-- Raw Material -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Raw Material*</label>
+        <select name="raw_material" id="raw_material" class="w-full p-2 border rounded-md">
+          <option value="I don’t know">I don’t know</option>
+        </select>
+      </div>
+
+      <!-- Embedded Material (Dynamic for Papier-Mâché) -->
+      <div id="embedded_material_container" class="hidden">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Embedded Material*</label>
+        <select name="embedded_material" id="embedded_material" class="w-full p-2 border rounded-md">
+          <option value="I don’t know">I don’t know</option>
+        </select>
+      </div>
+
+      <!-- Fabric Choice (Dynamic for Embroidery) -->
+      <div id="fabric_choice_container" class="hidden">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Fabric Choice*</label>
+        <select name="fabric_choice" id="fabric_choice" class="w-full p-2 border rounded-md">
+          <option value="I don't know">I don't know</option>
+        </select>
+      </div>
+
+      <!-- Processing -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Processing*</label>
+        <select name="processing" id="processing" class="w-full p-2 border rounded-md">
+          <option value="I don’t know">I don’t know</option>
+        </select>
+      </div>
+
+      <!-- Dye Types (Dynamic) -->
+      <div id="dye_types_container" class="hidden">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Dye Types*</label>
+        <select name="dye_types" id="dye_types" class="w-full p-2 border rounded-md">
+            <option value="I don’t know">I don’t know</option>
+        </select>
+      </div>
+
+      <!-- Certifications -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Certifications*</label>
+        <select name="certifications" id="certifications" class="w-full p-2 border rounded-md">
+          <option value="I don’t know">I don’t know</option>
+        </select>
+      </div>
+
+      <!-- Weaving Design (Dynamic) -->
+      <div id="weaving_design_container" class="hidden">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Type of Weaving*</label>
+        <select name="weaving_design" id="weaving_design" class="w-full p-2 border rounded-md">
+          <option value="I don’t know">I don’t know</option>
+        </select>
+      </div>
+
+      <!-- Finishing Technique (Dynamic) -->
+      <div id="finishing_technique_container" class="hidden">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Finishing Technique*</label>
+        <select name="finishing_technique" id="finishing_technique" class="w-full p-2 border rounded-md">
+          <option value="I don’t know">I don’t know</option>
+        </select>
+      </div>
+
+      <!-- Volume of Shipping -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Volume of Shipping*</label>
+        <select name="shipping_volume" id="shipping_volume" class="w-full p-2 border rounded-md">
+          <option value="Individual">Individual</option>
+          <option value="Bulk">Bulk</option>
+        </select>
+      </div>
+
+      <!-- Shipping Distance -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Calculate Your Shipping Distance*</label>
+        <div class="flex space-x-2">
+          <input type="text" name="shipping_distance" id="shipping_distance" class="w-full p-2 border rounded-md" readonly placeholder="Share location to calculate">
+          <button type="button" id="shareLocation" class="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700">Share Live Location</button>
+        </div>
+        <p id="distanceMessage" class="text-sm text-gray-600 mt-2"></p>
+      </div>
+
+      <!-- Shipping Location -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Shipping Location*</label>
+        <select name="shipping_location" id="shipping_location" class="w-full p-2 border rounded-md">
+          <option value="Kashmir">Directly from Kashmir</option>
+          <option value="DKC">From DKC US-Based Warehouse</option>
+        </select>
+        <div id="dkcWarehouseOptions" class="mt-2 hidden">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Select DKC Warehouse</label>
+          <select name="dkc_warehouse" id="dkc_warehouse" class="w-full p-2 border rounded-md">
+            <option value="West Coast">West Coast</option>
+            <option value="East Coast">East Coast</option>
+            <option value="Midwest">Midwest</option>
+          </select>
+          <p id="nearestWarehouseMessage" class="text-sm text-gray-600 mt-2"></p>
+        </div>
+      </div>
+
+      <!-- Packaging -->
+      <div id="packaging_container">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Packaging*</label>
+        <select name="packaging" id="packaging" class="w-full p-2 border rounded-md">
+          <option value="I don't know">I don't know</option>
+        </select>
+      </div>
+
+      <!-- Transportation -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Transportation*</label>
+        <select name="transportation" id="transportation" class="w-full p-2 border rounded-md">
+          <option value="I don’t know">I don’t know</option>
+          <option value="Sea">International Sea</option>
+          <option value="Air">International Air</option>
+          <option value="Local">Local</option>
+          <option value="Domestic">Domestic</option>
+        </select>
+      </div>
+
+      <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">
+        Calculate Carbon Footprint
+      </button>
+    </form>
+
+    <!-- Result Section -->
+    <div id="result" class="mt-8 hidden">
+      <div class="bg-gray-50 p-4 rounded-md">
+        <div class="text-lg font-semibold mb-2">
+          Carbon Footprint: <span id="footprint" class="footprint-value"></span>
+        </div>
+        <div class="text-sm text-gray-600 mb-4">
+          Confidence Level: <span id="confidence"></span>
+        </div>
+        <div class="mt-4">
+          <h3 class="font-medium mb-2">Recommendations:</h3>
+          <ul id="recommendations" class="list-disc pl-5 space-y-2 text-sm"></ul>
+        </div>
+        <div class="mt-4">
+          <h3 class="font-medium mb-2">Explanations:</h3>
+          <ul id="explanations" class="list-disc pl-5 space-y-2 text-sm"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Global variables
+let userLat = null;
+let userLng = null;
+
+const subcategoryMapping = {
+  "Boutique": [
+    "Pashmina", "Kani Craft", "Cashmere", "Silk",
+    "Kashmiri Bags and Purses", "Kashmiri Jackets",
+    "Kaftans", "Kurtas", "Pherans", "Kashmiri Jewelry", "Sarongs"
+  ],
+  "Interior Decor": [
+    "Papier-Mâché Items", "Bed Linens", "Room Divider Screens",
+    "Office Accessories", "Jeweled Wall Hangings", "Tapestry",
+    "Sofa and Cushion Covers"
+  ],
+  "Dining and Serving Ware": [
+    "Copperware", "Silverware", "Walnutware", "Papier-Mâché Ware"
+  ],
+  "Rugs and Carpets": [
+    "Rugs and Carpets", "Namda Embroidery Rugs"
+  ],
+  "Furniture": [
+    "Walnut Wood Carving Furniture", "Crewel Furniture",
+    "Wicker Furniture", "Room Dividers"
+  ],
+  "Ceiling Treatment": ["Khatamband"],
+  "Window Treatment": [
+    "Crewel - Embroidery Curtains", "Pinjrakari - Kashmir Lattice Work"
+  ],
+  "Recycled Craft": ["Papier-Mâché", "Gabba"],
+  "Sports Craft": ["Cricket-Bat", "Chess-Board"],
+  "Hide Craft": ["Leather", "Fur & Astrakhan"],
+  "Culinary Craft": ["Kashmiri Wazwan Canned Food", "Kahwa & Pink Tea"],
+  "Embroidery": [
+    "Suzani/Sozni - Fine NeedleWork", "Zardozi - Metal Thread Work",
+    "Zalakdozi - Crewel Work", "Ari/Aari - Hook Work",
+    "Dorukh - Double-sided Work", "Kashidakari - Surface Embroidery",
+    "Jaaldar - Net Work", "Papier-Machie Inspired Embroidery"
+  ]
+};
+
+const rawMaterialMapping = {
+  "Boutique": {
+    "Pashmina": [
+      { value: "Ultra-Fine Pashmina (10-12 microns)", text: "Ultra-Fine Pashmina (10-12 microns)" },
+      { value: "Fine Pashmina (12-14 microns)", text: "Fine Pashmina (12-14 microns)" },
+      { value: "Standard Pashmina (14-16 microns)", text: "Standard Pashmina (14-16 microns)" }
+    ],
+    "Kani Craft": [
+      { value: "Ultra-Fine Pashmina (10-12 microns)", text: "Ultra-Fine Pashmina (10-12 microns)" },
+      { value: "Fine Pashmina (12-14 microns)", text: "Fine Pashmina (12-14 microns)" },
+      { value: "Standard Pashmina (14-16 microns)", text: "Standard Pashmina (14-16 microns)" }
+    ],
+    "Cashmere": [
+      { value: "Ultra-Fine Cashmere (13-15 microns)", text: "Ultra-Fine Cashmere (13-15 microns)" },
+      { value: "Fine Cashmere (15-17 microns)", text: "Fine Cashmere (15-17 microns)" },
+      { value: "Standard Cashmere (17-19 microns)", text: "Standard Cashmere (17-19 microns)" }
+    ],
+    "Silk": [
+      { value: "Mulberry Silk", text: "Mulberry Silk" },
+      { value: "Tussar Silk", text: "Tussar Silk" },
+      { value: "Eri Silk", text: "Eri Silk" },
+      { value: "Muga Silk", text: "Muga Silk" },
+      { value: "Raw Silk", text: "Raw Silk" },
+      { value: "Organza Silk", text: "Organza Silk" }
+    ],
+    "Sarongs": [
+      { value: "Pashmina", text: "Pashmina" },
+      { value: "Cashmere", text: "Cashmere" },
+      { value: "Cotton", text: "Cotton" },
+      { value: "Silk", text: "Silk" },
+      { value: "Linen", text: "Linen" }
+    ],
+    "Kashmiri Bags and Purses": [
+      { value: "Wool", text: "Wool" },
+      { value: "Silk", text: "Silk" },
+      { value: "Cotton", text: "Cotton" },
+      { value: "Leather", text: "Leather" },
+      { value: "Canvas", text: "Canvas" },
+      { value: "Jute", text: "Jute" },
+      { value: "Velvet", text: "Velvet" }
+    ],
+    "Kashmiri Jackets": [
+      { value: "Pashmina", text: "Pashmina" },
+      { value: "Cashmere", text: "Cashmere" },
+      { value: "Silk", text: "Silk" },
+      { value: "Cotton", text: "Cotton" },
+      { value: "Velvet", text: "Velvet" },
+      { value: "Leather", text: "Leather" }
+    ],
+    "Kaftans": [
+      { value: "Pashmina", text: "Pashmina" },
+      { value: "Silk", text: "Silk" },
+      { value: "Cotton", text: "Cotton" },
+      { value: "Linen", text: "Linen" },
+      { value: "Velvet", text: "Velvet" },
+      { value: "Chiffon", text: "Chiffon" }
+    ],
+    "Kurtas": [
+      { value: "Wool", text: "Wool" },
+      { value: "Silk", text: "Silk" },
+      { value: "Cotton", text: "Cotton" },
+      { value: "Linen", text: "Linen" },
+      { value: "Velvet", text: "Velvet" },
+      { value: "Khadi", text: "Khadi" }
+    ],
+    "Pherans": [
+      { value: "Wool", text: "Wool" },
+      { value: "Cashmere", text: "Cashmere" },
+      { value: "Silk", text: "Silk" },
+      { value: "Cotton", text: "Cotton" },
+      { value: "Khadi", text: "Khadi" },
+      { value: "Tweed", text: "Tweed" },
+      { value: "Blazer Fabric", text: "Blazer Fabric" },
+      { value: "Funnel Fabric", text: "Funnel Fabric" }
+    ],
+    "Kashmiri Jewelry": [
+      { value: "Silver", text: "Silver" },
+      { value: "Gold", text: "Gold" },
+      { value: "Copper", text: "Copper" },
+      { value: "Brass", text: "Brass" },
+      { value: "Semi-precious Stones", text: "Semi-precious Stones" },
+      { value: "Pearls", text: "Pearls" },
+      { value: "Enamel", text: "Enamel" }
+    ]
+  },
+  "Interior Decor": {
+    "Papier-Mâché Items": [
+      { value: "Waste Paper and Cotton Rags", text: "Waste Paper and Cotton Rags" },
+      { value: "Plant Fibers (such as Hemp)", text: "Plant Fibers (such as Hemp)" },
+      { value: "Rice Flour Paste or Starch Paste", text: "Rice Flour Paste or Starch Paste" }
+    ],
+    "Tapestry": [
+      { value: "Wool", text: "Wool" },
+      { value: "Silk", text: "Silk" },
+      { value: "Cotton", text: "Cotton" },
+      { value: "Blended Fabrics", text: "Blended Fabrics" }
+    ],
+    "Jeweled Wall Hangings": [
+      { value: "Fabric (Silk, Cotton)", text: "Fabric (Silk, Cotton)" },
+      { value: "Metal", text: "Metal" }
+    ],
+    "Office Accessories": [
+      { value: "Wood", text: "Wood" },
+      { value: "Papier-Mâché", text: "Papier-Mâché" },
+      { value: "Metal", text: "Metal" },
+      { value: "Fabric", text: "Fabric" },
+      { value: "Leather", text: "Leather" }
+    ],
+    "Room Divider Screens": [
+      { value: "Wood", text: "Wood" },
+      { value: "Papier-Mâché", text: "Papier-Mâché" },
+      { value: "Fabric", text: "Fabric" },
+      { value: "Metal", text: "Metal" }
+    ],
+    "Sofa and Cushion Covers": [
+      { value: "Cotton", text: "Cotton" },
+      { value: "Silk", text: "Silk" },
+      { value: "Wool", text: "Wool" },
+      { value: "Velvet", text: "Velvet" }
+    ],
+    "Bed Linens": [
+      { value: "Cotton", text: "Cotton" },
+      { value: "Silk", text: "Silk" },
+      { value: "Wool", text: "Wool" },
+      { value: "Linen", text: "Linen" }
+    ]
+  },
+  "Dining and Serving Ware": {
+    "Copperware": [
+      { value: "Copper", text: "Copper" },
+      { value: "Brass", text: "Brass" },
+      { value: "Bronze", text: "Bronze" }
+    ],
+    "Silverware": [
+      { value: "Silver", text: "Silver" },
+      { value: "Silver-Plated", text: "Silver-Plated" },
+      { value: "Sterling Silver", text: "Sterling Silver" }
+    ],
+    "Walnutware": [
+      { value: "Walnut Wood", text: "Walnut Wood" },
+    ],
+    "Papier-Mâché Ware": [
+      { value: "Copper", text: "Copper" },
+      { value: "Brass", text: "Brass" },
+      { value: "Bronze", text: "Bronze" }
+    ]
+  },
+  "Rugs and Carpets": {
+    "Rugs and Carpets": [
+      { value: "Silk", text: "Silk on Silk" },
+      { value: "Wool", text: "Wool on Cotton" },
+      { value: "Cotton", text: "Cotton on Cotton" }
+    ],
+    "Namda Embroidery Rugs": [
+      { value: "Wool", text: "Wool" },
+      { value: "Wool-Cotton Blend", text: "Wool-Cotton Blend" }
+    ]
+  },
+  "Furniture": {
+    "Walnut Wood Carving Furniture": [
+      { value: "Kashmiri Walnut Wood - Grade A", text: "Kashmiri Walnut Wood - Grade A" },
+      { value: "Kashmiri Walnut Wood - Grade B", text: "Kashmiri Walnut Wood - Grade B" },
+      { value: "Kashmiri Walnut Wood - Grade C", text: "Kashmiri Walnut Wood - Grade C" }
+    ],
+    "Crewel Furniture": [
+    { value: "Crewel-embroidered fabric", text: "Crewel-embroidered fabric" }
+    ],
+    "Wicker Furniture": [
+      { value: "Rattan", text: "Rattan" },
+      { value: "Reed", text: "Reed" },
+      { value: "Bamboo", text: "Bamboo" }
+    ],
+    "Room Dividers": [
+      { value: "Wood", text: "Wood" },
+      { value: "Fabric", text: "Fabric" },
+      { value: "Wicker", text: "Wicker" }
+    ]
+  },
+  "Ceiling Treatment": {
+    "Khatamband": [
+      { value: "Kashmiri Walnut Wood", text: "Kashmiri Walnut Wood" },
+      { value: "Deodar Cedar", text: "Deodar Cedar" },
+      { value: "Fir Wood", text: "Fir Wood" },
+      { value: "Pine Wood", text: "Pine Wood" },
+      { value: "Local Softwoods", text: "Local Softwoods" }
+    ]
+  },
+  "Window Treatment": {
+    "Pinjrakari - Kashmir Lattice Work": [
+      { value: "Silver Fir Wood", text: "Silver Fir Wood" },
+      { value: "Blue Pine Wood", text: "Blue Pine Wood" },
+      { value: "Walnut Wood", text: "Walnut Wood" },
+      { value: "Cedar (Deodar) Wood", text: "Cedar (Deodar) Wood" }
+    ],
+    "Crewel - Embroidery Curtains": [
+      { value: "Organic Cotton", text: "Organic Cotton" },
+      { value: "Kashmir Silk", text: "Kashmir Silk" },
+      { value: "Velvet", text: "Velvet" },
+      { value: "Organic Linen", text: "Organic Linen" }
+    ],
+  },
+  "Recycled Craft": {
+    "Papier-Mâché": [
+      { value: "Waste Paper and Cotton Rags", text: "Waste Paper and Cotton Rags" },
+      { value: "Plant Fibers (such as Hemp)", text: "Plant Fibers (such as Hemp)" },
+      { value: "Rice Flour Paste or Starch Paste", text: "Rice Flour Paste or Starch Paste" }
+    ],
+    "Gabba": [
+      { value: "Recycled Wool", text: "Recycled Wool" },
+      { value: "Recycled Cotton", text: "Recycled Cotton" },
+      { value: "Recycled Silk", text: "Recycled Silk" },
+      { value: "Recycled Fabric Threads", text: "Recycled Fabric Threads" }
+    ]
+  },
+  "Sports Craft": {
+    "Cricket-Bat": [
+      { value: "Willow Wood", text: "Willow Wood" },
+      { value: "Kashmir Willow", text: "Kashmir Willow" }
+    ],
+    "Chess-Board": [
+      { value: "Wood", text: "Wood (e.g., Walnut, Maple)" }
+    ]
+  },
+  "Hide Craft": {
+    "Leather": [
+      { value: "Full-grain Leather", text: "Full-grain Leather" },
+      { value: "Top-grain Leather", text: "Top-grain Leather" },
+      { value: "Suede", text: "Suede" }
+    ],
+    "Fur & Astrakhan": [
+      { value: "Natural Fur (e.g., Mink, Fox)", text: "Natural Fur (e.g., Mink, Fox)" },
+      { value: "Faux Fur", text: "Faux Fur" },
+      { value: "Astrakhan (Karakul Lamb Fur)", text: "Astrakhan (Karakul Lamb Fur)" }
+    ]
+  },
+  "Culinary Craft": {
+    "Kashmiri Wazwan Canned Food": [
+      { value: "Lamb", text: "Lamb - Cuts: Shoulder, Ribs, Leg, & Shank" },
+      { value: "Mutton", text: "Mutton: Cuts: Bone-in like Neck or Ribs" },
+      { value: "Chicken", text: "Chicken - Cuts Drumsticks, Breast, Wings." },
+      { value: "Beef", text: "Beef: Cuts: Brisket, Stew and Shank" },
+      { value: "Goat", text: "Goat: Cuts: Stew, Shoulder and Leg" },
+      { value: "Fish", text: "Fish : Trout and Carp" },
+      { value: "Vegetarian", text: "Vegetarian (No Meat)" }
+    ],
+    "Kahwa & Pink Tea": [
+      { value: "Local Ingredients", text: "Local Ingredients" },
+      { value: "Green Tea", text: "Green Tea" },
+      { value: "Spices", text: "Spices" },
+      { value: "Saffron", text: "Saffron" },
+      { value: "Nuts", text: "Nuts" }
+    ]
+  },
+  "Embroidery": {
+    "Suzani/Sozni - Fine NeedleWork": [
+      { value: "Fine Wool Threads (from Pashmina goats)", text: "Fine Wool Threads (from Pashmina goats)" },
+      { value: "Pure Cotton Threads", text: "Pure Cotton Threads" }
+    ],
+    "Zardozi - Metal Thread Work": [
+      { value: "Gold-plated silver threads (Kalabattu)", text: "Gold-plated silver threads (Kalabattu)" },
+      { value: "Silver-coated copper threads (modern alternative)", text: "Silver-coated copper threads (modern alternative)" }
+    ],
+    "Zalakdozi - Crewel Work": [
+      { value: "Cotton Threads", text: "Cotton Threads" },
+      { value: "Silk Threads (occasionally)", text: "Silk Threads (occasionally)" }
+    ],
+    "Ari/Aari - Hook Work": [
+      { value: "Silk Threads", text: "Silk Threads" },
+      { value: "Cotton Threads", text: "Cotton Threads" }
+    ],
+    "Dorukh - Double-sided Work": [
+      { value: "Fine Cotton Threads", text: "Fine Cotton Threads" },
+      { value: "Fine Wool Threads (pashmina quality)", text: "Fine Wool Threads (pashmina quality)" }
+    ],
+    "Kashidakari - Surface Embroidery": [
+      { value: "Cotton Threads", text: "Cotton Threads" },
+      { value: "Silk Threads", text: "Silk Threads" },
+      { value: "Pashmina Threads", text: "Pashmina Threads" }
+    ],
+    "Jaaldar - Net Work": [
+      { value: "Silk Threads", text: "Silk Threads" }
+    ],
+    "Papier-Machie Inspired Embroidery": [
+      { value: "Silk Threads", text: "Silk Threads" },
+      { value: "Cotton Threads", text: "Cotton Threads" }
+    ]
+  }
+};
+
+const embeddedMaterialMapping = {
+  "Papier-Mâché Items": [
+    "Wood", "Fabric", "Metal"
+  ],
+  "Recycled Craft": {
+    "Papier-Mâché": ["Wood", "Fabric", "Metal"]
+  }
+};
+
+const fabricChoiceMapping = {
+  "Suzani/Sozni - Fine NeedleWork": ["Pure Pashmina", "Fine Wool", "Raffal", "Cotton", "Light Muslin"],
+  "Zardozi - Metal Thread Work": ["Velvet", "Heavy Silk", "Satin", "Brocade", "Dense Cotton"],
+  "Zalakdozi - Crewel Work": ["Cotton Duck", "Heavy Linen", "Twill", "Canvas", "Thick Cotton"],
+  "Ari/Aari - Hook Work": ["Silk", "Georgette", "Crepe", "Velvet", "Fine Cotton", "Chiffon", "Net Fabrics", "Tulle"],
+  "Dorukh - Double-sided Work": ["Fine Muslin", "Light Cotton", "Fine Pashmina", "Lightweight Even-weave Fabrics"],
+  "Kashidakari - Surface Embroidery": ["Woolen Base", "Cotton Canvas", "Raffal", "Pashmina", "Medium-weight Cotton"],
+  "Jaaldar - Net Work": ["Fine Cotton", "Even-weave Fabrics", "Light Muslin", "Pure Cotton with Regular Weave"],
+  "Papier-Machie Inspired Embroidery": ["Velvet", "Fine Silk", "Pashmina", "Medium-weight Cotton", "Satin"]
+};
+
+
+const processingMapping = {
+  "Boutique": {
+    "Pashmina": ["Hand Spinning, Hand Weaving", "Hand Spinning, Machine Weaving", "Machine Spinning, Machine Weaving"],
+    "Kani Craft": ["Hand Spinning, Hand Weaving", "Hand Spinning, Machine Weaving", "Machine Spinning, Machine Weaving"],
+    "Cashmere": ["Hand Spinning, Hand Weaving", "Hand Spinning, Machine Weaving", "Machine Spinning, Machine Weaving"],
+    "Silk": ["Hand Spinning, Hand Weaving", "Hand Spinning, Machine Weaving", "Machine Spinning, Machine Weaving"],
+    "Sarongs": ["Hand Weaving", "Machine Weaving"],
+    "Kashmiri Bags and Purses": ["Handcrafted", "Machine Stitching"],
+    "Kashmiri Jackets": ["Hand Spinning, Hand Weaving", "Machine Weaving", "Handcrafted", "Machine Stitching"],
+    "Kaftans": ["Hand Spinning, Hand Weaving", "Machine Weaving", "Handcrafted", "Machine Stitching"],
+    "Kurtas": ["Hand Spinning, Hand Weaving", "Machine Weaving", "Handcrafted", "Machine Stitching"],
+    "Pherans": ["Hand Spinning, Hand Weaving", "Machine Weaving", "Handcrafted", "Machine Stitching"],
+    "Kashmiri Jewelry": ["Handcrafted", "Machine-Made", "Traditional Techniques"]
+  },
+  "Interior Decor": {
+    "Papier-Mâché Items": ["Traditional Paper Mâché Method", "Molded Paper Mâché Process", "Paper Mâché with Lacquer Finish"],
+    "Tapestry": ["Handcrafted", "Machine-Made", "Traditional Techniques"],
+    "Jeweled Wall Hangings": ["Handcrafted", "Machine-Made", "Traditional Techniques"],
+    "Office Accessories": ["Handcrafted", "Machine-Made", "Traditional Techniques"],
+    "Room Divider Screens": ["Handcrafted", "Machine-Made", "Traditional Techniques"],
+    "Sofa and Cushion Covers": ["Handcrafted", "Machine-Made", "Traditional Techniques"],
+    "Bed Linens": ["Handcrafted", "Machine-Made", "Traditional Techniques"]
+  },
+  "Dining and Serving Ware": {
+    "Papier-Mâché Ware": ["Handcrafted", "Machine-Made"],
+    "Walnutware": ["Handcrafted", "Machine-Made"],
+    "Silverware": ["Handcrafted", "Machine-Made"],
+    "Copperware": ["Handcrafted", "Machine-Made"]
+  },
+  "Rugs and Carpets": {
+    "Rugs and Carpets": ["Hand-Knotted","Hand-Tufted", "Machine-Made"],
+    "Namda Embroidery Rugs": ["Handcrafted"]
+  },
+  "Furniture": {
+    "Walnut Wood Carving Furniture": ["Hand-Carved", "Machine-Made"],
+    "Crewel Furniture": ["Hand embroidery techniques"],
+    "Wicker Furniture": ["Hand-weaving techniques", "Natural material treatment"],
+    "Room Dividers": ["Handcrafted joinery", "Assembly Techniques"]
+  },
+  "Ceiling Treatment": {
+    "Khatamband": ["Handcrafted Techniques", "Joinery Methods"]
+  },
+  "Window Treatment": {
+    "Pinjrakari - Kashmir Lattice Work": ["Handcrafted Techniques", "Traditional Joinery"],
+    "Crewel - Embroidery Curtains": [
+      "Chain Stitch", "Satin Stitch", "Blanket Stitch", "Stem Stitch",
+      "Chain Stitch (Split Variation)", "Herringbone Stitch", "Couching Stitch",
+      "Flat Stitch", "Raised Chain Stitch", "French Knots"
+    ]
+  },
+  "Recycled Craft": {
+  "Papier-Mâché": [
+    "Traditional Paper Mâché Method", 
+    "Molded Paper Mâché Process", 
+    "Paper Mâché with Lacquer Finish"
+  ],
+  "Gabba": [
+    "Traditional Techniques with Recycled Fabric", 
+    "Machine-Assisted Weaving with Eco-Friendly Threads"
+  ]
+},
+  "Sports Craft": {
+  "Cricket-Bat": ["Handcrafted", "Machine-made"],
+  "Chess-Board": ["Handcrafted", "Machine-made"]
+},
+  "Hide Craft": {
+  "Leather": ["Handcrafted", "Machine-made"],
+  "Fur & Astrakhan": ["Handcrafted", "Machine-made"]
+},
+  "Culinary Craft": {
+  "Kashmiri Wazwan Canned Food": ["Traditional Cooking", "Modern Cooking"],
+  "Kahwa & Pink Tea": ["Traditional Brewing", "Modern Brewing"]
+},
+  "Embroidery": {
+  "Suzani/Sozni - Fine NeedleWork": ["Single-thread technique", "Very fine stitches", "Dense parallel lines", "Layered color work", "Surface satin construction", "Even stitch spacing"],
+  "Zardozi - Metal Thread Work": ["Metal thread couching", "Underlay preparation", "Framework stitching", "Raised work technique", "Metal component anchoring", "Padding technique"],
+  "Zalakdozi - Crewel Work": ["Long-short technique", "Pattern filling", "Directional stitching", "Texture building", "Relief work creation", "Surface coverage"],
+  "Ari/Aari - Hook Work": ["Hook work technique", "Frame-mounted construction", "Chain stitch formation", "Bead attachment", "Sequin work", "Surface embellishment"],
+  "Dorukh - Double-sided Work": ["Double-sided construction", "No-knot technique", "Clean reverse method", "Identical stitch formation", "Mirror-image working", "Hidden thread endings"],
+  "Kashidakari - Surface Embroidery": ["Chain stitch construction", "Pattern building", "Surface coverage", "Color blending", "Design framework", "Motif development"],
+  "Jaaldar - Net Work": ["Thread pulling technique", "Grid formation", "Systematic hole creation", "Even tension network", "Geometric framework building", "Regular interval spacing"],
+  "Papier-Machie Inspired Embroidery": ["Layer building technique", "Color gradation work", "Motif outlining", "Pattern filling", "Shading technique", "Dimensional effect creation"]
+}
+};
+
+const craftingMapping = {
+  "Boutique": {
+    "Pashmina": ["Natural-Dyed", "Vegetable-Dyed", "Chemical-Dyed", "Acid-Dyed", "Eco-Dyed", "Azo-Free Dyed", "Tie-Dyed", "Ombre-Dyed", "Hand-Painted or Brush-Dyed"],
+    "Kani Craft": ["Natural-Dyed", "Vegetable-Dyed", "Chemical-Dyed", "Acid-Dyed", "Eco-Dyed", "Azo-Free Dyed", "Tie-Dyed", "Ombre-Dyed", "Hand-Painted or Brush-Dyed"],
+    "Cashmere": ["Natural-Dyed", "Vegetable-Dyed", "Chemical-Dyed", "Acid-Dyed", "Eco-Dyed", "Azo-Free Dyed", "Tie-Dyed", "Ombre-Dyed", "Hand-Painted or Brush-Dyed"],
+    "Silk": ["Natural-Dyed", "Vegetable-Dyed", "Chemical-Dyed", "Acid-Dyed", "Eco-Dyed", "Azo-Free Dyed", "Tie-Dyed", "Ombre-Dyed", "Hand-Painted or Brush-Dyed"],
+    "Sarongs": ["Natural-Dyed", "Vegetable-Dyed", "Chemical-Dyed", "Eco-Dyed", "Azo-Free Dyed"],
+    "Kashmiri Bags and Purses": ["Natural-Dyed", "Vegetable-Dyed", "Chemical-Dyed", "Acid-Dyed", "Eco-Dyed", "Azo-Free Dyed", "Tie-Dyed", "Ombre-Dyed", "Hand-Painted or Brush-Dyed"],
+    "Kashmiri Jackets": ["Natural-Dyed", "Vegetable-Dyed", "Chemical-Dyed", "Acid-Dyed", "Eco-Dyed", "Azo-Free Dyed", "Tie-Dyed", "Ombre-Dyed", "Hand-Painted or Brush-Dyed"],
+    "Kaftans": ["Natural-Dyed", "Vegetable-Dyed", "Chemical-Dyed", "Acid-Dyed", "Eco-Dyed", "Azo-Free Dyed", "Tie-Dyed", "Ombre-Dyed", "Hand-Painted or Brush-Dyed"],
+    "Kurtas": ["Natural-Dyed", "Vegetable-Dyed", "Chemical-Dyed", "Acid-Dyed", "Eco-Dyed", "Azo-Free Dyed", "Tie-Dyed", "Ombre-Dyed", "Hand-Painted or Brush-Dyed"],
+    "Pherans": ["Natural-Dyed", "Vegetable-Dyed", "Chemical-Dyed", "Acid-Dyed", "Eco-Dyed", "Azo-Free Dyed", "Tie-Dyed", "Ombre-Dyed", "Hand-Painted or Brush-Dyed"],
+    "Kashmiri Jewelry": ["Natural-Dyed", "Vegetable-Dyed", "Chemical-Dyed", "Acid-Dyed", "Eco-Dyed", "Azo-Free Dyed", "Tie-Dyed", "Ombre-Dyed", "Hand-Painted or Brush-Dyed"]
+  },
+  "Interior Decor": {
+    "Papier-Mâché Items": ["Natural-Dyed", "Vegetable-Dyed", "Chemical-Dyed"],
+    "Tapestry": ["Natural-Dyed", "Vegetable-Dyed", "Chemical-Dyed"],
+    "Jeweled Wall Hangings": ["Natural-Dyed", "Vegetable-Dyed", "Chemical-Dyed"],
+    "Office Accessories": ["Natural-Dyed", "Vegetable-Dyed", "Chemical-Dyed"],
+    "Room Divider Screens": ["Natural-Dyed", "Vegetable-Dyed", "Chemical-Dyed"],
+    "Sofa and Cushion Covers": ["Natural-Dyed", "Vegetable-Dyed", "Chemical-Dyed"],
+    "Bed Linens": ["Natural-Dyed", "Vegetable-Dyed", "Chemical-Dyed"]
+  }
+};
+
+const certificationsMapping = {
+  "Boutique": {
+    "Pashmina": ["GI Certificate", "Responsible Wool Standard (RWS)", "Blockchain Traceability", "Handloom Mark", "Woolmark Certification", "Global Organic Textile Standard (GOTS)", "OEKO-TEX Standard 100", "Fair Trade Certification", "Customs and Import Certifications", "Cradle to Cradle Certification*", "None"],
+    "Kani Craft": ["GI Certificate", "Responsible Wool Standard (RWS)", "Blockchain Traceability", "Handloom Mark", "Woolmark Certification", "Global Organic Textile Standard (GOTS)", "OEKO-TEX Standard 100", "Fair Trade Certification", "Customs and Import Certifications", "Cradle to Cradle Certification*", "None"],
+    "Cashmere": ["Cashmere Certification Program (CCP)", "Sustainable Cashmere Certification", "The Good Cashmere Standard®", "Global Organic Textile Standard (GOTS)", "Fair Trade Certification", "OEKO-TEX® Standard 100", "Customs and Import Certifications", "Cradle to Cradle Certification*", "None"],
+    "Silk": ["Silk Mark Certification", "OEKO-TEX® Standard 100", "Global Organic Textile Standard (GOTS)", "Fair Trade Certification", "ISO 14001", "Sustainable Apparel Coalition's Higg Index", "Customs and Import Certifications", "Cradle to Cradle Certification*", "None"],
+    "Sarongs": ["Global Organic Textile Standard (GOTS)", "OEKO-TEX® Standard 100", "Organic Content Standard (OCS)", "Fair Trade Certification", "Cradle to Cradle Certification*", "Customs and Import Certifications", "None"],
+    "Kashmiri Bags and Purses": ["Leather Working Group (LWG) Certification", "Global Organic Textile Standard (GOTS)", "OEKO-TEX® Standard 100", "Cradle to Cradle Certification", "PETA-Approved Vegan Certification", "ISO 14001", "Sustainable Apparel Coalition (SAC) Higg Index", "Fair Trade Certification", "Customs and Import Certifications", "None"],
+    "Kashmiri Jackets": ["GI Certification", "OEKO-TEX® Standard 100", "Global Organic Textile Standard (GOTS)", "Leather Working Group (LWG) Certification", "Cradle to Cradle Certification", "Fair Trade Certification", "ISO 14001", "Sustainable Apparel Coalition (SAC) Higg Index", "ISO 9001", "Customs and Import Certifications", "None"],
+    "Kaftans": ["GI", "OEKO-TEX® Standard 100", "Global Organic Textile Standard (GOTS)", "Fair Trade Certification", "Customs and Import Certifications", "Cradle to Cradle Certification", "Sustainable Apparel Coalition (SAC) Higg Index", "ISO 14001", "ISO 9001", "None"],
+    "Kurtas": ["OEKO-TEX® Standard 100", "GOTS", "Cradle to Cradle Certification", "Customs and Import Certifications", "Fair Trade Certifications", "None"],
+    "Pherans": ["Woolmark", "OEKO-TEX® Standard 100", "Fair Trade Certification", "Cradle to Cradle Certification", "Customs and Import Certifications", "Fair Trade", "GOTS", "None"],
+    "Kashmiri Jewelry": ["Hallmarking, RJC Certification, Fairmined, Conflict-Free (e.g., Kimberley Process)", "Gemological Institute of America (GIA) Certification", "International Gemological Institute (IGI) Certification", "Colored Gemstone Certification", "ISO 9001 Certification", "American Gem Society (AGS) Certification", "Jewelry Council of America (JCA) Certification", "Ethical Gemstone Certification", "ISO 14001", "Fair Trade Certification", "Cradle to Cradle Certification", "Customs and Import Certifications", "None"]
+  },
+  "Interior Decor": {
+    "Papier-Mâché Items": ["Geographical Indication (GI) Certification", "Fair Trade Certification", "OEKO-TEX® Standard 100", "Cradle to Cradle Certification", "Customs and Import Certifications", "None"],
+    "Tapestry": ["Global Organic Textile Standard (GOTS)", "Fair Trade Certification", "OEKO-TEX® Standard 100", "ISO 9001 (Quality Management)", "Cradle to Cradle Certification", "Customs and Import Certifications", "None"],
+    "Jeweled Wall Hangings": ["Responsible Jewelry Council (RJC) Certification", "Fair Trade Certification", "Hallmarking for Jewelry", "OEKO-TEX® Standard 100", "ISO 9001 (Quality Management)", "Cradle to Cradle Certification", "Customs and Import Certifications", "None"],
+    "Office Accessories": ["Fair Trade Certification", "ISO 9001 (Quality Management)", "Cradle to Cradle Certification", "Customs and Import Certifications", "None"],
+    "Room Divider Screens": ["Fair Trade Certification", "Cradle to Cradle Certification", "ISO 9001 (Quality Management)", "Customs and Import Certifications", "None"],
+    "Sofa and Cushion Covers": ["Global Organic Textile Standard (GOTS)", "Fair Trade Certification", "OEKO-TEX® Standard 100", "ISO 14001 (Environmental Management)", "Cradle to Cradle Certification", "Customs and Import Certifications", "None"],
+    "Bed Linens": ["Global Organic Textile Standard (GOTS)", "OEKO-TEX® Standard 100", "Fair Trade Certification", "Cradle to Cradle Certification", "Customs and Import Certifications", "None"]
+  },
+  "Dining and Serving Ware": {
+    "Papier-Mâché Ware": ["Geographical Indication (GI) Certification", "Fair Trade Certification", "OEKO-TEX® Standard 100", "Cradle to Cradle Certification", "Customs and Import Certifications", "None"],
+    "Walnutware": ["Forest Stewardship Council (FSC) Certification", "Fair Trade Certification", "ISO 14001 (Environmental Management)", "Cradle to Cradle Certification", "Customs and Import Certifications", "None"],
+    "Silverware": ["Responsible Jewelry Council (RJC) Certification", "Hallmarking for Jewelry", "Fair Trade Certification", "ISO 9001 (Quality Management)", "Cradle to Cradle Certification", "Customs and Import Certifications", "None"],
+    "Copperware": ["Fairmined Gold Certification (if applicable)", "ISO 9001 (Quality Management)", "ISO 14001 (Environmental Management)", "Fair Trade Certification", "Cradle to Cradle Certification", "Customs and Import Certifications", "None"]
+  },
+  "Rugs and Carpets": {
+    "Rugs and Carpets": ["Geographical Indication (GI) Certification", "Global Organic Textile Standard (GOTS)", "Fair Trade Certification", "OEKO-TEX® Standard 100", "ISO 9001 (Quality Management)", "Cradle to Cradle Certification", "Customs and Import Certifications", "None"],
+    "Namda Embroidery Rugs": ["Fair Trade Certification", "ISO 14001 (Environmental Management)", "Cradle to Cradle Certification", "Customs and Import Certifications", "None"]
+  },
+  "Furniture": {
+    "Walnut Wood Carving Furniture": [
+      "Forest Stewardship Council (FSC) Certification",
+      "Fair Trade Certification",
+      "ISO 14001 (Environmental Management)",
+      "Cradle to Cradle Certification",
+      "Customs and Import Certifications",
+      "None"
+    ],
+    "Crewel Furniture": [
+      "Global Organic Textile Standard (GOTS)",
+      "OEKO-TEX® Standard 100",
+      "Fair Trade Certification",
+      "Cradle to Cradle Certification",
+      "Customs and Import Certifications",
+      "None"
+    ],
+    "Wicker Furniture": [
+      "Fair Trade Certification",
+      "ISO 14001 (Environmental Management)",
+      "FSC Certification (if using wood or natural materials)",
+      "None"
+    ],
+    "Room Dividers": [
+      "Handcrafted Quality Certification",
+      "Eco-Friendly Certification",
+      "None"
+    ]
+  },
+  "Ceiling Treatment": {
+    "Khatamband": [
+      "Geographical Indication (GI) Certification",
+      "Fair Trade Certification",
+      "ISO 9001 (Quality Management)",
+      "ISO 14001 (Environmental Management)",
+      "Cradle to Cradle Certification", 
+      "Customs and Import Certifications",
+      "None"
+    ]
+  },
+  "Window Treatment": {
+    "Pinjrakari - Kashmir Lattice Work": [
+      "Geographical Indication (GI) Certification",
+      "Fair Trade Certification",
+      "ISO 14001 (Environmental Management)",
+      "Cradle to Cradle Certification", 
+      "Customs and Import Certifications",
+      "None"
+    ],
+    "Crewel - Embroidery Curtains": [
+      "Global Organic Textile Standard (GOTS)",
+      "OEKO-TEX® Standard 100",
+      "Fair Trade Certification",
+      "ISO 9001 (Quality Management)",
+      "Cradle to Cradle Certification",
+      "Customs and Import Certifications",
+      "None"
+    ]
+  },
+  "Recycled Craft": {
+    "Papier-Mâché": [
+      "Global Organic Textile Standard (GOTS)",
+      "Fair Trade Certification",
+      "Cradle to Cradle Certification",
+      "Customs and Import Certifications",
+      "None"
+    ],
+    "Gabba": [
+      "Fair Trade Certification",
+      "ISO 14001 (Environmental Management)",
+      "Cradle to Cradle Certification",
+      "Customs and Import Certifications",
+      "None"
+    ]
+  },
+  "Sports Craft": {
+    "Cricket-Bat": [
+      "ISO 9001 (Quality Management)",
+      "Fair Trade Certification",
+      "FSC Certification (Forest Stewardship Council)",
+      "Product Safety Certifications",
+      "Cradle to Cradle Certification",
+      "Customs and Import Certifications",
+      "None"
+    ],
+    "Chess-Board": [
+      "ISO 9001 (Quality Management)",
+      "Fair Trade Certification",
+      "FSC Certification (Forest Stewardship Council)",
+      "OEKO-TEX® Standard 100",
+      "Cradle to Cradle Certification",
+      "Customs and Import Certifications",
+      "None"
+    ]
+  },
+  "Hide Craft": {
+    "Leather": [
+      "Leather Working Group (LWG) Certification",
+      "Fair Trade Certification",
+      "ISO 9001 (Quality Management)",
+      "OEKO-TEX® Standard 100",
+      "Cradle to Cradle Certification",
+      "Customs and Import Certifications",
+      "None"
+    ],
+    "Fur & Astrakhan": [
+      "CITES Certification (for products involving endangered species)",
+      "Fair Trade Certification",
+      "ISO 14001 (Environmental Management)",
+      "Cradle to Cradle Certification",
+      "Customs and Import Certifications",
+      "None"
+    ]
+  },
+  "Culinary Craft": {
+    "Kashmiri Wazwan Canned Food": [
+      "FSSAI Certification",
+      "ISO 22000 (Food Safety Management System)",
+      "Organic Certification",
+      "Halal Certification",
+      "Fair Trade Certification",
+      "Cradle to Cradle Certification",
+      "Customs and Import Certifications",
+      "None"
+    ],
+    "Kahwa & Pink Tea": [
+      "FSSAI Certification",
+      "ISO 22000 (Food Safety Management System)",
+      "Organic Certification", 
+      "Fair Trade Certification",
+      "Customs and Import Certifications",
+      "None"
+    ]
+  },
+  "Embroidery": {
+    "Suzani/Sozni - Fine NeedleWork": [
+      "Geographical Indication (GI) Certification",
+      "Fair Trade Certification",
+      "ISO 9001 (Quality Management)",
+      "Cradle to Cradle Certification",
+      "Customs and Import Certifications",
+      "None"
+    ],
+    "Zardozi - Metal Thread Work": [
+      "Fair Trade Certification",
+      "ISO 14001 (Environmental Management)",
+      "Cradle to Cradle Certification",
+      "Customs and Import Certifications",
+      "None"
+    ],
+    "Zalakdozi - Crewel Work": [
+      "Fair Trade Certification",
+      "ISO 14001 (Environmental Management)",
+      "Cradle to Cradle Certification",
+      "Customs and Import Certifications",
+      "None"
+    ],
+    "Ari/Aari - Hook Work": [
+      "Fair Trade Certification",
+      "OEKO-TEX® Standard 100",
+      "Cradle to Cradle Certification",
+      "Customs and Import Certifications",
+      "None"
+    ],
+    "Dorukh - Double-sided Work": [
+      "Fair Trade Certification",
+      "OEKO-TEX® Standard 100",
+      "Cradle to Cradle Certification",
+      "Customs and Import Certifications",
+      "None"
+    ],
+    "Kashidakari - Surface Embroidery": [
+      "Fair Trade Certification",
+      "OEKO-TEX® Standard 100",
+      "Cradle to Cradle Certification",
+      "Customs and Import Certifications",
+      "None"
+    ],
+    "Jaaldar - Net Work": [
+      "Fair Trade Certification",
+      "OEKO-TEX® Standard 100",
+      "Cradle to Cradle Certification",
+      "Customs and Import Certifications",
+      "None"
+    ],
+    "Papier-Machie Inspired Embroidery": [
+      "Fair Trade Certification",
+      "OEKO-TEX® Standard 100",
+      "Cradle to Cradle Certification",
+      "Customs and Import Certifications",
+      "None"
+    ]
+  }
+};
+
+const weavingDesignMapping = {
+  "Pashmina": ["Twill Weave", "Diamond Weave", "Herringbone Weave", "Jacquard Weave", "Plain Weave", "Honeycomb Weave"],
+  "Cashmere": ["Twill Weave", "Diamond Weave", "Herringbone Weave", "Jacquard Weave", "Plain Weave", "Honeycomb Weave"],
+  "Silk": ["Satin Weave", "Twill Weave", "Plain Weave", "Jacquard Weave", "Organza Weave", "Brocade Weave", "Crepe Weave", "Chiffon Weave", "Georgette Weave"],
+  "Kashmiri Bags and Purses": ["Satin Weave", "Twill Weave", "Plain Weave", "Jacquard Weave", "Organza Weave", "Brocade Weave", "Crepe Weave", "Chiffon Weave", "Georgette Weave"],
+  "Kashmiri Jackets": ["Satin Weave", "Twill Weave", "Plain Weave", "Jacquard Weave", "Organza Weave", "Brocade Weave", "Crepe Weave", "Chiffon Weave", "Georgette Weave"],
+  "Kaftans": ["Satin Weave", "Twill Weave", "Plain Weave", "Jacquard Weave", "Organza Weave", "Brocade Weave", "Crepe Weave", "Chiffon Weave", "Georgette Weave"],
+  "Kurtas": ["Satin Weave", "Twill Weave", "Plain Weave", "Jacquard Weave", "Organza Weave", "Brocade Weave", "Crepe Weave", "Chiffon Weave", "Georgette Weave"],
+  "Pherans": ["Satin Weave", "Twill Weave", "Plain Weave", "Jacquard Weave", "Organza Weave", "Brocade Weave", "Crepe Weave", "Chiffon Weave", "Georgette Weave"],
+  "Kashmiri Jewelry": ["Satin Weave", "Twill Weave", "Plain Weave", "Jacquard Weave", "Organza Weave", "Brocade Weave", "Crepe Weave", "Chiffon Weave", "Georgette Weave"]
+};
+
+const finishingTechniqueMapping = {
+  "Papier-Mâché Items": ["Hand-Painted", "Varnished", "Gold/Silver Leaf Application", "Textured Finishes"],
+  "Tapestry": ["Fringing", "Backing", "Binding", "Lining", "Mounting", "Stiffening"],
+  "Jeweled Wall Hangings": ["Fringing", "Backing", "Binding", "Lining", "Mounting", "Stiffening"],
+  "Office Accessories": ["Hand-Painted", "Varnished", "Textured Finishes"],
+  "Room Divider Screens": ["Hand-Painted", "Lacquered", "Varnished", "Textured Finishes"],
+  "Sofa and Cushion Covers": ["Hand-Painted", "Embroidered", "Screen-Printed", "Block-Printed"],
+  "Bed Linens": ["Hand-Painted", "Embroidered", "Screen-Printed", "Block-Printed"],
+  "Kashmiri Jewelry": ["Polished Finish", "Matte Finish", "Oxidized Finish", "Hammered Finish", "Enamel Work"],
+  "Papier-Mâché Ware": ["Polished Finish", "Antiqued Finish", "Hammered Finish"],
+  "Walnutware": ["Natural Finish", "Lacquered Finish", "Stained Finish"],
+  "Silverware": ["Polished Finish", "Antiqued Finish", "Hammered Finish"],
+  "Copperware": ["Polished Finish", "Antiqued Finish", "Hammered Finish"],
+  "Namda Embroidery Rugs": ["Fringed Edges", "Bound Edges", "Double-Sided Finish"],
+  "Walnut Wood Carving Furniture": ["Matte Finish", "Glossy Finish", "Semi-Gloss Finish"],
+  "Crewel Furniture": ["Hand-stitched edges", "Lining and backing finishes"],
+  "Wicker Furniture": ["Natural Sealing", "Protective Coatings"],
+  "Room Dividers": ["Staining", "Painting", "Natural Sealing"],
+  "Khatamband": ["Natural Finish", "Lacquer Finish"],
+  "Pinjrakari - Kashmir Lattice Work": ["Natural Finish", "Lacquer Finish", "Stained Finish"],
+  "Papier-Mâché": ["Hand-Painted", "Varnished", "Gold/Silver Leaf Application", "Textured Finishes"],
+  "Gabba": ["Handwoven Edges", "Woolen Pile Finish", "Distressed or Antique Finish"],
+  "Cricket-Bat": ["Hand-polished", "Custom Varnish Finish", "Sanding"],
+  "Chess-Board": ["Hand-polished for smooth surface and longevity", "Wood-stained or lacquered for protection"],
+  "Leather": ["Waxed for a smooth and shiny surface", "Stained or dyed to enhance color depth and richness", "Natural Leather Finish for a rustic look"],
+  "Fur & Astrakhan": ["Fur Brushed for smoothness and volume", "Curled or Crimped for added texture", "Dyed for vibrant and customized colors"],
+
+};
+
+const packagingMapping = {
+  "Boutique": {
+    "Pashmina": ["Fabric Wrapping", "Luxury Gift Boxes", "Protective Sleeves", "Hang Tags"],
+    "Kani Craft": ["Fabric Wrapping", "Luxury Gift Boxes", "Protective Sleeves", "Hang Tags"],
+    "Cashmere": ["Fabric Wrapping", "Luxury Gift Boxes", "Protective Sleeves", "Hang Tags"],
+    "Silk": ["Fabric Wrapping", "Luxury Gift Boxes", "Protective Sleeves", "Hang Tags"],
+    "Sarongs": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"],
+    "Kashmiri Bags and Purses": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"],
+    "Kashmiri Jackets": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"],
+    "Kaftans": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"],
+    "Kurtas": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"],
+    "Pherans": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"],
+    "Kashmiri Jewelry": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"]
+  },
+  "Interior Decor": {
+    "Papier-Mâché Items": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"],
+    "Tapestry": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"],
+    "Jeweled Wall Hangings": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"],
+    "Office Accessories": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"],
+    "Room Divider Screens": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"],
+    "Sofa and Cushion Covers": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"],
+    "Bed Linens": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"]
+  },
+  "Dining and Serving Ware": {
+    "Papier-Mâché Ware": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"],
+    "Walnutware": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"],
+    "Silverware": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"],
+    "Copperware": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"]
+  },
+  "Rugs and Carpets": {
+    "Rugs and Carpets": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"],
+    "Namda Embroidery Rugs": ["Custom-fit Crates/Boxes", "Eco-friendly Packaging Materials"]
+  },
+  "Furniture": {
+    "Walnut Wood Carving Furniture": ["Custom-fit Crates/Boxes", "Eco-friendly Packaging Materials"],
+    "Crewel Furniture": ["Custom-fit Crates/Boxes", "Eco-friendly Packaging Materials"],
+    "Wicker Furniture": ["Custom-fit Crates/Boxes", "Eco-friendly Packaging Materials"],
+    "Room Dividers": ["Custom-fit Crates/Boxes", "Eco-friendly Packaging Materials"]
+  },
+  "Ceiling Treatment": {
+    "Khatamband": ["Custom-fit Crates/Boxes", "Eco-friendly Packaging Materials"]
+  },
+  "Window Treatment": {
+    "Pinjrakari - Kashmir Lattice Work": ["Custom-fit Crates/Boxes", "Eco-friendly Packaging Materials"],
+    "Crewel - Embroidery Curtains": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"]
+  },
+  "Recycled Craft": {
+    "Papier-Mâché": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"],
+    "Gabba": ["Custom-fit Boxes", "Eco-friendly Packaging Materials"]
+  },
+  "Sports Craft": {
+    "Cricket-Bat": ["Custom-fit Crates/Boxes", "Eco-friendly Packaging Materials"],
+    "Chess-Board": ["Custom-fit Crates/Boxes", "Eco-friendly Packaging Materials"]
+  },
+  "Hide Craft": {
+    "Leather": ["Custom-fit Crates/Boxes", "Eco-friendly Packaging Materials"],
+    "Fur & Astrakhan": ["Custom-fit Crates/Boxes", "Eco-friendly Packaging Materials"]
+  },
+  "Culinary Craft": {
+    "Kashmiri Wazwan Canned Food": ["Canned", "Glass Jars", "Flexible Pouches"],
+    "Kahwa & Pink Tea": ["Tin Boxes", "Paper Boxes", "Vacuum-Sealed Pouches"]
+  }
+
+};
+
+document.addEventListener("DOMContentLoaded", function() {
+  // Your existing event listeners
+  document.getElementById('main_category').addEventListener('change', function() {
+    const mainCat = this.value === "I don’t know" ? "Boutique" : this.value;
+    const subcatSelect = document.getElementById('subcategory');
+    subcatSelect.innerHTML = '<option value="I don’t know">I don’t know</option>';
+
+    if (subcategoryMapping[mainCat]) {
+      subcategoryMapping[mainCat].forEach(function(subcat) {
+        const opt = document.createElement('option');
+        opt.value = subcat;
+        opt.textContent = subcat;
+        subcatSelect.appendChild(opt);
+      });
+    }
+
+    updateSubcategoryOptions(mainCat, subcatSelect.value);
+  });
+
+  document.getElementById('subcategory').addEventListener('change', function() {
+    const mainCat = document.getElementById('main_category').value === "I don’t know" 
+      ? "Boutique" 
+      : document.getElementById('main_category').value;
+    updateSubcategoryOptions(mainCat, this.value);
+  });
+});
+
+
+function updateSubcategoryOptions(mainCat, subcat) {
+  const subcatValue = subcat === "I don't know" ? subcategoryMapping[mainCat][0] : subcat;
+
+  // Raw Material
+  const rawMaterialSelect = document.getElementById('raw_material');
+  rawMaterialSelect.innerHTML = '<option value="I don\'t know">I don\'t know</option>';
+  if (rawMaterialMapping[mainCat] && rawMaterialMapping[mainCat][subcatValue]) {
+    rawMaterialMapping[mainCat][subcatValue].forEach(function(option) {
+      const opt = document.createElement('option');
+      opt.value = option.value;
+      opt.textContent = option.text;
+      rawMaterialSelect.appendChild(opt);
+    });
+  }
+
+  // Add your new code here:
+  // Fabric Choice for Embroidery
+  const fabricChoiceContainer = document.getElementById('fabric_choice_container');
+  const fabricChoiceSelect = document.getElementById('fabric_choice');
+  fabricChoiceSelect.innerHTML = '<option value="I don\'t know">I don\'t know</option>';
+  // Check if this is an embroidery subcategory
+  if (mainCat === "Embroidery" && subcatValue in fabricChoiceMapping) {
+    fabricChoiceContainer.classList.remove('hidden');
+    fabricChoiceMapping[subcatValue].forEach(function(fabric) {
+      const opt = document.createElement('option');
+      opt.value = fabric;
+      opt.textContent = fabric;
+      fabricChoiceSelect.appendChild(opt);
+    });
+  } else {
+    fabricChoiceContainer.classList.add('hidden');
+  }
+
+  // Dye Types - Only show for items NOT in finishingTechniqueMapping
+  const dyeTypesContainer = document.getElementById('dye_types_container');
+  const dyeTypesSelect = document.getElementById('dye_types');
+  dyeTypesSelect.innerHTML = '<option value="I don\'t know">I don\'t know</option>';
+  
+  if (craftingMapping[mainCat] && craftingMapping[mainCat][subcatValue] && 
+      !(subcatValue in finishingTechniqueMapping)) {
+    dyeTypesContainer.classList.remove('hidden');
+    craftingMapping[mainCat][subcatValue].forEach(function(dyeType) {
+      const opt = document.createElement('option');
+      opt.value = dyeType;
+      opt.textContent = dyeType;
+      dyeTypesSelect.appendChild(opt);
+    });
+  } else {
+    dyeTypesContainer.classList.add('hidden');
+  }
+
+  // Embedded Material (Papier-Mâché) - Updated to work with both Papier-Mâché subcategories
+  const embeddedMaterialContainer = document.getElementById('embedded_material_container');
+  const embeddedMaterialSelect = document.getElementById('embedded_material');
+  embeddedMaterialSelect.innerHTML = '<option value="I don\'t know">I don\'t know</option>';
+  
+  // Check both subcategories that should display embedded materials
+  if (subcatValue === "Papier-Mâché Items" || subcatValue === "Papier-Mâché") {
+    embeddedMaterialContainer.classList.remove('hidden');
+    
+    // Determine which mapping to use based on the subcategory
+    let materialsToShow = [];
+    if (subcatValue === "Papier-Mâché Items") {
+      materialsToShow = embeddedMaterialMapping[subcatValue];
+    } else if (subcatValue === "Papier-Mâché" && embeddedMaterialMapping["Recycled Craft"]) {
+      materialsToShow = embeddedMaterialMapping["Recycled Craft"]["Papier-Mâché"];
+    }
+    
+    // Add the available materials to the dropdown
+    if (materialsToShow && materialsToShow.length > 0) {
+      materialsToShow.forEach(function(material) {
+        const opt = document.createElement('option');
+        opt.value = material;
+        opt.textContent = material;
+        embeddedMaterialSelect.appendChild(opt);
+      });
+    }
+  } else {
+    embeddedMaterialContainer.classList.add('hidden');
+  }
+
+  // Processing
+  const processingSelect = document.getElementById('processing');
+  processingSelect.innerHTML = '<option value="I don\'t know">I don\'t know</option>';
+  if (processingMapping[mainCat] && processingMapping[mainCat][subcatValue]) {
+    processingMapping[mainCat][subcatValue].forEach(function(proc) {
+      const opt = document.createElement('option');
+      opt.value = proc;
+      opt.textContent = proc;
+      processingSelect.appendChild(opt);
+    });
+  }
+
+  // Crafting
+  const craftingSelect = document.getElementById('dye_types');
+  craftingSelect.innerHTML = '<option value="I don\'t know">I don\'t know</option>';
+  if (craftingMapping[mainCat] && craftingMapping[mainCat][subcatValue]) {
+    craftingMapping[mainCat][subcatValue].forEach(function(craft) {
+      const opt = document.createElement('option');
+      opt.value = craft;
+      opt.textContent = craft;
+      craftingSelect.appendChild(opt);
+    });
+  }
+
+  // Certifications
+  const certificationsSelect = document.getElementById('certifications');
+  certificationsSelect.innerHTML = '<option value="I don\'t know">I don\'t know</option>';
+
+  if (certificationsMapping[mainCat] && certificationsMapping[mainCat][subcatValue]) {
+    certificationsMapping[mainCat][subcatValue].forEach(function(cert) {
+      const opt = document.createElement('option');
+      opt.value = cert;
+      opt.textContent = cert;
+      certificationsSelect.appendChild(opt);
+    });
+  } else {
+    console.warn(`No certifications found for ${mainCat} -> ${subcatValue}`);
+  }
+
+  // Weaving Design
+  const weavingContainer = document.getElementById('weaving_design_container');
+  const weavingSelect = document.getElementById('weaving_design');
+  weavingSelect.innerHTML = '<option value="I don\'t know">I don\'t know</option>';
+  if (subcatValue in weavingDesignMapping) {
+    weavingContainer.classList.remove('hidden');
+    weavingDesignMapping[subcatValue].forEach(function(weave) {
+      const opt = document.createElement('option');
+      opt.value = weave;
+      opt.textContent = weave;
+      weavingSelect.appendChild(opt);
+    });
+  } else {
+    weavingContainer.classList.add('hidden');
+  }
+
+  // Finishing Technique - Only show for items in finishingTechniqueMapping
+  const finishingContainer = document.getElementById('finishing_technique_container');
+  const finishingSelect = document.getElementById('finishing_technique');
+  finishingSelect.innerHTML = '<option value="I don\'t know">I don\'t know</option>';
+  
+  if (subcatValue in finishingTechniqueMapping) {
+    finishingContainer.classList.remove('hidden');
+    finishingTechniqueMapping[subcatValue].forEach(function(finish) {
+      const opt = document.createElement('option');
+      opt.value = finish;
+      opt.textContent = finish;
+      finishingSelect.appendChild(opt);
+    });
+  } else {
+    finishingContainer.classList.add('hidden');
+  }
+
+  const packagingContainer = document.getElementById('packaging_container');
+  if (mainCat === "Embroidery") {
+    // Hide packaging for embroidery
+    packagingContainer.classList.add('hidden');
+  } else {
+    // Show packaging for all other categories
+    packagingContainer.classList.remove('hidden');
+  }
+
+  // Packaging options - Only populate if not Embroidery
+  const packagingSelect = document.getElementById('packaging');
+  packagingSelect.innerHTML = '<option value="I don\'t know">I don\'t know</option>';
+  if (mainCat !== "Embroidery" && packagingMapping[mainCat] && packagingMapping[mainCat][subcatValue]) {
+    packagingMapping[mainCat][subcatValue].forEach(function(pkg) {
+      const opt = document.createElement('option');
+      opt.value = pkg;
+      opt.textContent = pkg;
+      packagingSelect.appendChild(opt);
+    });
+  }
+}
+
+// Coordinates for Kashmir and DKC Warehouses
+const KASHMIR_COORDS = { lat: 34.0837, lng: 74.7973 };
+const DKC_WAREHOUSES = {
+  "West Coast": { lat: 37.7749, lng: -122.4194 },
+  "East Coast": { lat: 40.7128, lng: -74.0060 },
+  "Midwest": { lat: 41.8781, lng: -87.6298 }
+};
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
+
+function updateShippingDistance() {
+  const shippingLocation = document.getElementById('shipping_location').value;
+  let distance;
+
+  if (!userLat || !userLng) {
+    document.getElementById('shipping_distance').value = "I don’t know";
+    document.getElementById('distanceMessage').textContent = "Share location to calculate distance.";
+    return;
+  }
+
+  if (shippingLocation === "Kashmir") {
+    distance = calculateDistance(userLat, userLng, KASHMIR_COORDS.lat, KASHMIR_COORDS.lng);
+  } else {
+    const selectedWarehouse = document.getElementById('dkc_warehouse').value;
+    const coords = DKC_WAREHOUSES[selectedWarehouse];
+    distance = calculateDistance(userLat, userLng, coords.lat, coords.lng);
+  }
+
+  if (isNaN(distance)) {
+    document.getElementById('shipping_distance').value = "I don’t know";
+    document.getElementById('distanceMessage').textContent = "Unable to calculate distance.";
+  } else {
+    document.getElementById('shipping_distance').value = distance.toFixed(2);
+    document.getElementById('distanceMessage').textContent = `Distance: ${distance.toFixed(2)} km`;
+  }
+}
+
+document.getElementById('shareLocation').addEventListener('click', function() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        userLat = position.coords.latitude;
+        userLng = position.coords.longitude;
+        updateShippingDistance();
+      },
+      (error) => {
+        alert('Unable to retrieve location: ' + error.message);
+        document.getElementById('shipping_distance').value = "I don’t know";
+        document.getElementById('distanceMessage').textContent = "Location unavailable.";
+      }
+    );
+  } else {
+    alert('Geolocation is not supported by your browser.');
+  }
+});
+
+document.getElementById('dkc_warehouse').addEventListener('change', updateShippingDistance);
+
+document.getElementById('shipping_location').addEventListener('change', function() {
+  const dkcOptions = document.getElementById('dkcWarehouseOptions');
+  if (this.value === "DKC") {
+    dkcOptions.classList.remove('hidden');
+  } else {
+    dkcOptions.classList.add('hidden');
+  }
+  if (userLat && userLng) {
+    updateShippingDistance();
+  }
+});
+
+document.getElementById('calculatorForm').addEventListener('submit', async function(event) {
+  event.preventDefault();
+
+  const formData = {
+    main_category: document.getElementById('main_category').value,
+    subcategory: document.getElementById('subcategory').value,
+    craft_category: document.getElementById('main_category').value,
+    craft_type: document.getElementById('subcategory').value,
+    raw_material: document.getElementById('raw_material').value,
+    embedded_material: document.getElementById('embedded_material').value,
+    processing: document.getElementById('processing').value,
+    // Handle the different fields - either use dye_types or crafting
+    crafting: document.getElementById('dye_types_container').classList.contains('hidden') ? 
+              null : document.getElementById('dye_types').value,
+    certifications: document.getElementById('certifications').value,
+    weaving_design: document.getElementById('weaving_design').value,
+    finishing_technique: document.getElementById('finishing_technique').value,
+    shipping_distance: document.getElementById('shipping_distance').value,
+    shipping_volume: document.getElementById('shipping_volume').value,
+    shipping_location: document.getElementById('shipping_location').value,
+    dkc_warehouse: document.getElementById('dkc_warehouse').value,
+    packaging: document.getElementById('main_category').value === "Embroidery" ? 
+               null : document.getElementById('packaging').value,
+    transportation: document.getElementById('transportation').value,
+    fabric_choice: document.getElementById('fabric_choice').value
+  };
+
+  try {
+    const response = await fetch('/calculate-carbon-footprint', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.json();
+      console.log('Validation error:', errorBody);
+      throw new Error('Calculation failed: ' + JSON.stringify(errorBody.detail));
+    }
+
+    const result = await response.json();
+    document.getElementById('footprint').textContent = `${result.carbon_footprint} ${result.unit}`;
+    document.getElementById('confidence').textContent = result.confidence_level;
+
+    const recommendationsList = document.getElementById('recommendations');
+    recommendationsList.innerHTML = '';
+    result.recommendations.forEach(recommendation => {
+      const li = document.createElement('li');
+      li.textContent = recommendation;
+      recommendationsList.appendChild(li);
+    });
+
+    const explanationsList = document.getElementById('explanations');
+    explanationsList.innerHTML = '';
+    result.explanations.forEach(explanation => {
+      const li = document.createElement('li');
+      li.textContent = explanation;
+      explanationsList.appendChild(li);
+    });
+
+    document.getElementById('result').classList.remove('hidden');
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error calculating carbon footprint: ' + error.message);
+  }
+});
+</script>
+{% endblock %}
